@@ -501,7 +501,7 @@ public abstract class PlotPlayer<P> implements CommandCaller, OfflinePlotPlayer,
      * @param location the target location
      */
     public void teleport(Location location) {
-        teleport(location, TeleportCause.PLUGIN);
+        teleport(location, TeleportCause.PLUGIN, TeleportFlag.EntityState.RETAIN_PASSENGERS);
     }
 
     /**
@@ -509,8 +509,9 @@ public abstract class PlotPlayer<P> implements CommandCaller, OfflinePlotPlayer,
      *
      * @param location the target location
      * @param cause    the cause of the teleport
+     * @param flag     the teleport flags
      */
-    public abstract void teleport(Location location, TeleportCause cause);
+    public abstract void teleport(Location location, TeleportCause cause, TeleportFlag.EntityState flag);
 
     /**
      * Kick this player to a location
@@ -519,7 +520,7 @@ public abstract class PlotPlayer<P> implements CommandCaller, OfflinePlotPlayer,
      */
     public void plotkick(Location location) {
         setMeta("kick", true);
-        teleport(location, TeleportCause.KICK);
+        teleport(location, TeleportCause.KICK, TeleportFlag.EntityState.RETAIN_PASSENGERS);
         deleteMeta("kick");
     }
 
@@ -766,11 +767,11 @@ public abstract class PlotPlayer<P> implements CommandCaller, OfflinePlotPlayer,
                                 if (plot.isLoaded()) {
                                     TaskManager.runTask(() -> {
                                         if (getMeta("teleportOnLogin", true)) {
-                                            teleport(location, TeleportCause.LOGIN);
+                                            teleport(location, TeleportCause.LOGIN, TeleportFlag.EntityState.RETAIN_PASSENGERS);
                                             sendMessage(
                                                     TranslatableCaption.of("teleport.teleported_to_plot"));
                                         }
-                                    });
+                                    });             
                                 } else if (!PlotSquared.get().isMainThread(Thread.currentThread())) {
                                     if (getMeta("teleportOnLogin", true)) {
                                         plot.teleportPlayer(
